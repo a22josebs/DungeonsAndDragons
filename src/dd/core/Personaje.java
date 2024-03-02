@@ -7,10 +7,9 @@ public class Personaje{
 
     public Personaje(){}
 
-    public Personaje(String nombre, int salud, Ataque arma){
+    public Personaje(String nombre, int salud){
         this.nombre = nombre;
         this.salud = salud;
-        this.ataque = arma;
     }
 
     public void setAtaque(Ataque ataque){

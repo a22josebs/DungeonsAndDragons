@@ -1,16 +1,17 @@
 package src.dd.core;
 
 public class Troll extends Personaje{
-
-    Ataque ataque;
     
-    public Troll(String nombre, int salud, Ataque arma){
-        super(nombre, salud,arma);
+    public Troll(String nombre, int salud, Ataque ataque){
+        super(nombre, salud);
+        this.ataque = ataque;
     }
-    public Troll(){
-        this.nombre = "Troll";
-        this.ataque = new Cuchillo();
-        this.salud = 1000;
+    
+    public void setSalud(int danio){
+        salud -= danio;
     }
-
+    public int getSalud(){
+        return salud;
+    }
+   
 }

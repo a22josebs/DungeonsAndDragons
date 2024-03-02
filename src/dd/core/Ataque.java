@@ -8,7 +8,7 @@ public interface Ataque {
 
     public default int calcularAtaque(int ataque){
         Random rnd = new Random();
-        int danio = Math.round((rnd.nextInt(0,1))*(rnd.nextFloat(0,1))*ataque);
+        int danio = Math.round((rnd.nextInt(0,2))*(rnd.nextFloat(0,1))*ataque);
         return danio;
     }
 }
