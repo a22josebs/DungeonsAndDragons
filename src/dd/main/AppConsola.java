@@ -19,7 +19,7 @@ public class AppConsola {
 
         Personaje[] trolls = new Personaje[numeroTrolls];
         for(int i=0;i<numeroTrolls;i++){
-            Personaje troll = new Troll("troll",1000,new Espada());
+            Personaje troll = new Troll("troll",1000);
             trolls[i] = troll;
         }
         return trolls;
@@ -37,13 +37,49 @@ public class AppConsola {
         return hayVivos;
     }
 
-    public void mostrarEjercitos(Personaje[] ejercito){
+    public int contarVivos(Personaje[] ejercito){
+        int vivos = 0;
         for(int i=0;i<ejercito.length;i++){
-            System.out.println(ejercito[i].nombre+i+" "+ejercito[i].salud);
+            if(ejercito[i].salud>0){
+                vivos++;
+            }
+        }
+        return vivos;
+    }
+
+    public void mostrarEjercitoArturo(Personaje[] ejercito){
+        int contador = 1;
+        System.out.println("Los supervivientes de la batalla fueron:");
+        System.out.print("{");
+        for(int i=0;i<ejercito.length;i++){
+            if(ejercito[i].salud>0){
+                if(contador==contarVivos(ejercito)){
+                    System.out.println("["+ejercito[i].nombre+": "+ejercito[i].salud+"]}");
+                }else{
+                    System.out.print("["+ejercito[i].nombre+": "+ejercito[i].salud+"], ");
+                    contador++;
+                }                
+            }
         }
     }
 
-    public void ataca(Personaje atacante, Personaje atacado){
+    public void mostrarEjercitoTrolls(Personaje[] ejercito){
+        int contador = 1;
+        System.out.println("Los supervivientes de la batalla fueron:");
+        System.out.print("{");
+        for(int i=0;i<ejercito.length;i++){
+            if(ejercito[i].salud>0){
+                if(contador==contarVivos(ejercito)){
+                    System.out.println("["+ejercito[i].nombre+(i+1)+": "+ejercito[i].salud+"]}");
+                }else{
+                    System.out.print("["+ejercito[i].nombre+(i+1)+": "+ejercito[i].salud+"], ");
+                    contador++;
+                }                
+            }
+        }
+    }
+
+    public void ataca(Personaje atacante, Personaje atacado,int n){
         if(atacado.salud<=0){
             return;
         }
@@ -54,6 +90,10 @@ public class AppConsola {
             System.out.println("Ataque con "+atacante.ataque.getNombre()+" (falla)");
         }
         delay(1000);
+        if(atacado.salud<=0){
+            System.out.println("--["+atacado.nombre+(n+1)+": "+atacado.salud+" HA MUERTO ]--");
+            return;
+        }
     }
 
     public void batalla(){
@@ -64,7 +104,6 @@ public class AppConsola {
         arturicos = ejercitoCaballeros();
         Personaje[] trolls =  new Personaje[numeroTrolls];
         trolls = ejercitoTrolls(numeroTrolls);
-        Personaje atacado;
         int ataqueRey = 3;
         int ataqueCaballero = 2;
         int index;
@@ -75,33 +114,68 @@ public class AppConsola {
         System.out.println("patrulla de "+numeroTrolls+" esas sanguinarias e inhumanas criaturas popularmente");
         System.out.println("conocidas como trolls.");
         System.out.println("De la batalla que aconteció, dejo aquí testimonio:");
-        //while(quedanVivos(arturicos) && quedanVivos(trolls)){
+        while(quedanVivos(arturicos) && quedanVivos(trolls)){
             for(int i=0;i<arturicos.length;i++){
-                index = rnd.nextInt(0,trolls.length);
-                if(i==0){
-                    System.out.print("["+arturicos[i].nombre+": "+arturicos[i].salud+"] lucha contra ["+trolls[index].nombre+" "+index);
-                    System.out.println(": "+trolls[index].salud+"]");
-                    for(int j=0;j<ataqueRey;j++){
-                        ataca(arturicos[i],trolls[index]);
+                do{
+                    index = rnd.nextInt(0,trolls.length);
+                }while(trolls[index].salud<=0);
+
+                if(arturicos[i].salud>0){
+                    if(i==0){
+                        System.out.print("["+arturicos[i].nombre+": "+arturicos[i].salud+"] lucha contra ["+trolls[index].nombre+" "+(index+1));
+                        System.out.println(": "+trolls[index].salud+"]");
+                        for(int j=0;j<ataqueRey;j++){
+                            ataca(arturicos[i],trolls[index],index);
+                        }
+                    }else{
+                        System.out.print("["+arturicos[i].nombre+": "+arturicos[i].salud+"] lucha contra ["+trolls[index].nombre+" "+(index+1));
+                        System.out.println(": "+trolls[index].salud+"]");
+                        for(int j=0;j<ataqueCaballero;j++){
+                            ataca(arturicos[i],trolls[index],index);
+                        }                   
                     }
-                }else{
-                    System.out.print("["+arturicos[i].nombre+": "+arturicos[i].salud+"] lucha contra ["+trolls[index].nombre+" "+(index+1));
-                    System.out.println(": "+trolls[index].salud+"]");
-                    for(int j=0;j<ataqueCaballero;j++){
-                        ataca(arturicos[i],trolls[index]);
-                    }                   
+                    if(!quedanVivos(trolls)){
+                        mostrarGanador(arturicos,trolls);
+                    }
                 }
             }
             for(int i=0;i<trolls.length;i++){
-                index = rnd.nextInt(0,arturicos.length);
-                System.out.print("["+trolls[i].nombre+(index+1)+": "+trolls[i].salud+"] lucha contra ["+arturicos[index].nombre);
-                System.out.println(": "+arturicos[index].salud+"]");
-                ataca(trolls[i],arturicos[index]);
-            }     
-        //}
-        mostrarEjercitos(arturicos);
-        mostrarEjercitos(trolls);
+                if(trolls[i].salud>0){
+                    int atack = rnd.nextInt(0,3);
+                    if(atack==0){
+                        trolls[i].setAtaque(new Espada());
+                    }else if(atack==1){
+                        trolls[i].setAtaque(new Arco());
+                    }else{
+                        trolls[i].setAtaque(new Cuchillo());
+                    }
+                    do{
+                        //Random rn = new Random();
+                        index = rnd.nextInt(0,arturicos.length);
+                    }while(arturicos[index].salud<=0 && quedanVivos(arturicos));
+                    if(quedanVivos(arturicos)){
+                        System.out.print("["+trolls[i].nombre+(i+1)+": "+trolls[i].salud+"] lucha contra ["+arturicos[index].nombre);
+                        System.out.println(": "+arturicos[index].salud+"]");
+                        ataca(trolls[i],arturicos[index],i);
+                    }
+                }
+                
+            }  
+        }
+        mostrarGanador(arturicos, trolls);
+    }
 
+    public void mostrarGanador(Personaje[] arturios, Personaje[] trols){
+        if(quedanVivos(arturios)){
+            System.out.println("FELICIDADES HAN GANADO LOS GRANDES CABALLEROS");
+            mostrarEjercitoArturo(arturios);
+        }else{
+            System.out.println("EL REINO DE ARTURO HA CAIDO");
+            System.out.println("HAN GANADO LOS TROLLS");
+            mostrarEjercitoTrolls(trols);
+
+        }
+        System.exit(0);
     }
 
     public void delay(int x){

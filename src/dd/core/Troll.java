@@ -2,9 +2,9 @@ package src.dd.core;
 
 public class Troll extends Personaje{
     
-    public Troll(String nombre, int salud, Ataque ataque){
+    public Troll(String nombre, int salud){
         super(nombre, salud);
-        this.ataque = ataque;
+        //this.ataque = ataque;
     }
     
     public void setSalud(int danio){
@@ -12,6 +12,10 @@ public class Troll extends Personaje{
     }
     public int getSalud(){
         return salud;
+    }
+    
+    public void setAtaque(Ataque ataque){
+        this.ataque = ataque;
     }
    
 }

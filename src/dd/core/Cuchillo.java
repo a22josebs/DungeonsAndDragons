@@ -2,7 +2,7 @@ package src.dd.core;
 
 public class Cuchillo implements Ataque{
     int valorAtaque = 25;
-    String nombre = "Espada";
+    String nombre = "Cuchillo";
 
     @Override
     public int lanzaAtaque(Personaje enemigo){
